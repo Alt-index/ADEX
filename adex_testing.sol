@@ -231,17 +231,14 @@ contract ADEX is Ownable {
 
     
     ///if(block.number-holded[msg.sender]>172800){ //1 month
-      if(block.number-holded[msg.sender]>10){
+      if(block.number-holded[msg.sender]>10 block.number-holded[msg.sender]<20){
 
-      holded[msg.sender]=block.number;
-
-      //send eth to owner address
       msg.sender.transfer(tokenReward*requestWithdraws[msg.sender]);
       
       //executes event ro register the changes
       LogWithdrawal(msg.sender, tokenReward*balances[msg.sender]);
 
-    }
+      }
   }
 
 
@@ -256,6 +253,8 @@ contract ADEX is Ownable {
 
   function requestWithdraw(uint value) public {
     require(value <= balances[msg.sender]);
+
+    holded[msg.sender]=block.number;
 
     requestWithdraws[msg.sender]=value;
     //executes event ro register the changes
