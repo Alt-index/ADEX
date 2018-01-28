@@ -231,7 +231,7 @@ contract ADEX is Ownable {
 
     
     ///if(block.number-holded[msg.sender]>172800){ //1 month
-      if(block.number-holded[msg.sender]>10 block.number-holded[msg.sender]<20){
+      if(block.number-holded[msg.sender]>10 && block.number-holded[msg.sender]<20){
 
       msg.sender.transfer(tokenReward*requestWithdraws[msg.sender]);
       
