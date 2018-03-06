@@ -185,7 +185,7 @@ contract ADEX is ADEXERC20 {
     string constant tokenName = "ADEX Shareholder's";
     string constant tokenSymbol = "LCX";
     uint256 constant holdTime = 5; // number of blocks required to hold for reward
-    uint256 constant holdMax = 5; // number of blocks required to hold for reward
+    uint256 constant holdMax = 25; // number of blocks required to hold for reward as maxium
 
     address public ADEXAddr = 0xD26286eb9E6E623dba88Ed504b628F648ADF7a0E;
     uint256 public tokenReward = 0;
