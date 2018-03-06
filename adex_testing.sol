@@ -57,16 +57,18 @@ contract Ownable {
 
 //////////////////////////////////////////////////////////////
 //                                                          //
-//  Lescovex, Shareholder's ERC20                           //
+//  ADEX, Shareholder's ERC20                           //
 //                                                          //
 //////////////////////////////////////////////////////////////
 
-contract LescovexERC20 is Ownable {
+contract ADEXERC20 is Ownable {
     
     using SafeMath for uint256;
 
 
     mapping (address => uint256) public balances;
+    
+    mapping (address => uint256) public requestWithdraws;
 
     mapping (address => mapping (address => uint256)) internal allowed;
 
@@ -81,7 +83,7 @@ contract LescovexERC20 is Ownable {
     uint256 public constant blockEndICO = 1524182460;
 
     /* Public variables for the ERC20 token */
-    string public constant standard = "ERC20 Lescovex";
+    string public constant standard = "ERC20 ADEX";
     uint8 public constant decimals = 8; // hardcoded to be a constant
     uint256 public totalSupply;
     string public name;
@@ -175,17 +177,17 @@ interface tokenRecipient {
 }
 
     
-contract Lescovex is LescovexERC20 {
+contract ADEX is ADEXERC20 {
 
     // Contract variables and constants
     uint256 constant initialSupply = 0;
     uint256 constant maxSupply = 1000000000000000;
-    string constant tokenName = "Lescovex Shareholder's";
+    string constant tokenName = "ADEX Shareholder's";
     string constant tokenSymbol = "LCX";
     uint256 constant holdTime = 5; // number of blocks required to hold for reward
     uint256 constant holdMax = 5; // number of blocks required to hold for reward
 
-    address public LescovexAddr = 0xD26286eb9E6E623dba88Ed504b628F648ADF7a0E;
+    address public ADEXAddr = 0xD26286eb9E6E623dba88Ed504b628F648ADF7a0E;
     uint256 public tokenReward = 0;
     // constant to simplify conversion of token amounts into integer form
     uint256 public tokenUnit = uint256(10)**decimals;
@@ -193,11 +195,10 @@ contract Lescovex is LescovexERC20 {
 
     //Declare logging events
     event LogDeposit(address sender, uint amount);
-    event LogWithdrawal(address receiver, uint amount);
-  
+    
 
     /* Initializes contract with initial supply tokens to the creator of the contract */
-    function Lescovex() public {
+    function ADEX() public {
         totalSupply = initialSupply;  // Update total supply
         name = tokenName;             // Set the name for display purposes
         symbol = tokenSymbol;         // Set the symbol for display purposes
@@ -278,7 +279,7 @@ contract Lescovex is LescovexERC20 {
   function requestWithdraw(uint value) public {
     require(value <= balances[msg.sender]);
 
-    hold(_to,_value);
+    hold(msg.sender, value);
 
     requestWithdraws[msg.sender]=value;
     //executes event ro register the changes
@@ -294,7 +295,7 @@ contract Lescovex is LescovexERC20 {
         uint256 tokenAmount = (msg.value * tokenUnit) / buyPrice();  // calculates the amount
         transferBuy(msg.sender, tokenAmount);
 
-        LescovexAddr.transfer(msg.value);
+        ADEXAddr.transfer(msg.value);
     }
 
     function transferBuy(address _to, uint256 _value) internal returns (bool) {
@@ -304,11 +305,11 @@ contract Lescovex is LescovexERC20 {
         totalSupply = totalSupply.add(_value*2);
 
         hold(_to,_value);
-        balances[LescovexAddr] = balances[LescovexAddr].add(_value);
+        balances[ADEXAddr] = balances[ADEXAddr].add(_value);
         balances[_to] = balances[_to].add(_value);
 
         Transfer(this, _to, _value);
-        Transfer(this, LescovexAddr, _value);
+        Transfer(this, ADEXAddr, _value);
         return true;
     }
 
