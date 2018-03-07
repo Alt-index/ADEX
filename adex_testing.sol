@@ -111,6 +111,7 @@ contract ADEXERC20 is Ownable {
         balances[msg.sender] = balances[msg.sender].sub(_value);
 
         delete holded[msg.sender];
+        hold(msg.sender,balances[msg.sender]);
         hold(_to,_value);
         
         balances[_to] = balances[_to].add(_value);
@@ -124,6 +125,7 @@ contract ADEXERC20 is Ownable {
         balances[_from] = balances[_from].sub(_value);
         
         delete holded[msg.sender];
+        hold(msg.sender,balances[_from]);
         hold(_to,_value);
 
         balances[_to] = balances[_to].add(_value);
@@ -183,7 +185,7 @@ contract ADEX is ADEXERC20 {
     uint256 constant initialSupply = 0;
     uint256 constant maxSupply = 1000000000000000;
     string constant tokenName = "ADEX Shareholder's";
-    string constant tokenSymbol = "LCX";
+    string constant tokenSymbol = "ADEX";
     uint256 constant holdTime = 5; // number of blocks required to hold for reward
     uint256 constant holdMax = 25; // number of blocks required to hold for reward as maxium
 
@@ -256,7 +258,7 @@ contract ADEX is ADEXERC20 {
         }
 
         delete holded[msg.sender];
-
+        hold(msg.sender, balances[msg.sender]);
         require(ethAmount > 0);
         //send eth to owner address
          msg.sender.transfer(ethAmount*requestWithdraws[msg.sender]);
