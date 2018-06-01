@@ -316,7 +316,7 @@ contract ALX is ALXERC20 {
 
 
         
-        balances[msg.sender] = balances[msg.sender].sub(requestWithdraws[msg.sender][roundCounter].amount[i]);
+        balances[msg.sender] = balances[msg.sender].sub(tokenM);
 
         msg.sender.transfer((tokenPrice*ethAmount/tokenUnit)-fee);
         owner.transfer(fee);
