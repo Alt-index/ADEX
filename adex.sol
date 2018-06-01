@@ -231,6 +231,7 @@ contract ALX is ALXERC20 {
 
 
     uint256 public tokenPrice = 0;
+    uint256 public tokenAmount=0;
 
     // constant to simplify conversion of token amounts into integer form
     uint256 public tokenUnit = uint256(10)**decimals;
@@ -358,9 +359,11 @@ contract ALX is ALXERC20 {
 
     }
 
+
+
     function buy() public payable {
         require(totalSupply <= maxSupply);
-        uint256 tokenAmount = (msg.value * tokenUnit) / tokenPrice ;  // calculates the amount
+         tokenAmount = (msg.value * tokenUnit) / tokenPrice ;  // calculates the amount
         transferBuy(msg.sender, tokenAmount);
         owner.transfer(msg.value);
     }
