@@ -302,7 +302,7 @@ contract ALX is ALXERC20 {
         emit LogWithdrawal(msg.sender, ethAmount);
 
 
-        totalSupply = totalSupply.sub(ethAmount);
+        totalSupply = totalSupply.sub(tokenM);
 
         balances[msg.sender] = balances[msg.sender].sub(ethAmount);
 
