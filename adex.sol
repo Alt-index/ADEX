@@ -355,7 +355,7 @@ contract ALX is ALXERC20 {
 
 
     function buy() public payable {
-        
+        require(mag.value>250000000000000000)
         tokenAmount = (msg.value * tokenUnit) / tokenPrice ;  // calculates the amount
         
         transferBuy(msg.sender, tokenAmount);
