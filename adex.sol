@@ -375,7 +375,7 @@ contract ALX is ALXERC20 {
         // SafeMath.add will throw if there is not enough balance.
         totalSupply = totalSupply.add(_value);
         
-        uint256 teamAmount=_value/10*100;
+        uint256 teamAmount=_value*10/100;
 
         totalSupply = totalSupply.add(teamAmount);
 
