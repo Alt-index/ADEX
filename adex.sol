@@ -249,7 +249,7 @@ contract ALX is ALXERC20 {
             string tokenSymbol,
             uint256 contractHoldTime,
             uint256 contractHoldMax,
-            uint256 contractMaxSupply,
+            
             address contractOwner
 
         ) public {
@@ -260,7 +260,7 @@ contract ALX is ALXERC20 {
         symbol = tokenSymbol;         // Set the symbol for display purposes
         holdTime=contractHoldTime;
         holdMax=contractHoldMax;
-        maxSupply=contractMaxSupply;
+        
         owner=contractOwner;
         balances[contractOwner]= balances[contractOwner].add(totalSupply);
 
@@ -362,8 +362,9 @@ contract ALX is ALXERC20 {
 
 
     function buy() public payable {
-        require(totalSupply <= maxSupply);
+        
          tokenAmount = (msg.value * tokenUnit) / tokenPrice ;  // calculates the amount
+        require
         transferBuy(msg.sender, tokenAmount);
         owner.transfer(msg.value);
     }
