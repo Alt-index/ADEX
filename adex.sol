@@ -251,7 +251,7 @@ contract ALX is ALXERC20 {
             uint256 contractMaxSupply,
             address contractOwner
 
-        ) internal {
+        ) public {
 
 
         totalSupply = initialSupply;  // Update total supply
