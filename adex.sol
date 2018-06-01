@@ -221,11 +221,6 @@ contract ALX is ALXERC20 {
     }
     
     mapping (address => mapping (uint256 => timeHold)) internal requestWithdraws;
-    //mapping (address => rounds) internal requestWithdraws;
-
-    
-
-    //mapping (address => timeHold) public holded;
 
 
     uint256 public withdrawFee = 1;
