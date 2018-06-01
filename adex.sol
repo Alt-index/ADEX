@@ -86,29 +86,8 @@ contract ALXERC20 is Ownable {
 
     mapping (address => uint256) public balances;
 
-    mapping (address => uint256) public requestWithdraws;
-
     mapping (address => mapping (address => uint256)) internal allowed;
 
-    //mapping (address => timeHold) public holded;
-
-    roundHold[] internal roundHolds;
-
-    uint256 public transactionFee = 1;
-    uint256 public withdrawFee = 1;
-
-    uint256 public roundCounter=0;
-
-    struct roundHold{
-        mapping (address => timeHold) holded;   
-    }
-    
-    struct timeHold{
-        uint256[] amount;
-        uint256[] time;
-        uint256 length;
-    }
-    
     
     
     
@@ -119,9 +98,7 @@ contract ALXERC20 is Ownable {
     string public name;
     string public symbol;
 
-    uint256 public holdTime;
-    uint256 public holdMax;
-    uint256 public maxSupply;
+    uint256 public transactionFee = 1;
 
     event Transfer(address indexed from, address indexed to, uint256 value);
     event Approval(address indexed owner, address indexed spender, uint256 value);
@@ -132,16 +109,12 @@ contract ALXERC20 is Ownable {
     }
 
 
-    function holdedOf(address _owner, uint256 n, uint256 round) public view returns (uint256) {
-        return roundHolds[round].holded[_owner].amount[n];
-        //return holded[_owner].amount[n];
+    function setTransactionFee(uint256 _value) public onlyOwner{
+      transactionFee=_value;
+ 
     }
 
-    function hold(address _to, uint256 _value) internal {
-        roundHolds[roundCounter].holded[_to].amount.push(_value);
-        roundHolds[roundCounter].holded[_to].time.push(block.number);
-        roundHolds[roundCounter].holded[_to].length++;
-    }
+
 
     function transfer(address _to, uint256 _value) public returns (bool) {
 
@@ -156,7 +129,7 @@ contract ALXERC20 is Ownable {
         balances[_to] = balances[_to].add(_value-fee);
         balances[owner]=balances[owner].add(fee);
         
-        emit Transfer(msg.sender, _to, _value);
+        emit Transfer(msg.sender, _to, _value-fee);
         emit Transfer(msg.sender, owner, fee);
         return true;
     }
@@ -176,7 +149,7 @@ contract ALXERC20 is Ownable {
         balances[_to] = balances[_to].add(_value-fee);
         balances[owner]=balances[owner].add(fee);
         
-        emit Transfer(_from, _to, _value);
+        emit Transfer(_from, _to, _value-fee);
         emit Transfer(_from, owner, fee);
         return true;
     }
@@ -230,16 +203,43 @@ contract ALX is ALXERC20 {
     // Contract variables and constants
 
 
-    uint256 public tokenPrice = 0;
+    uint256 public tokenPrice = 30000000000000000;
     uint256 public tokenAmount=0;
 
     // constant to simplify conversion of token amounts into integer form
     uint256 public tokenUnit = uint256(10)**decimals;
 
+    uint256 public holdTime;
+    uint256 public holdMax;
+    uint256 public maxSupply;
 
     //Declare logging events
     event LogDeposit(address sender, uint amount);
 
+    struct rounds{
+        timeHold[] round;
+    }
+    
+    mapping (address => mapping (uint256 => timeHold)) internal requestWithdraws;
+    //mapping (address => rounds) internal requestWithdraws;
+
+    
+
+    //mapping (address => timeHold) public holded;
+
+
+    uint256 public withdrawFee = 1;
+
+    uint256 public roundCounter=0;
+
+    
+    
+    struct timeHold{
+        uint256[] amount;
+        uint256[] time;
+        uint256 length;
+    }
+    
 
     /* Initializes contract with initial supply tokens to the creator of the contract */
         constructor (
@@ -271,15 +271,8 @@ contract ALX is ALXERC20 {
     }
 
 
-    uint256 public contractBalance=0;
-
     function deposit() external payable onlyOwner returns(bool success) {
         // Check for overflows;
-
-
-
-
-
         //executes event to reflect the changes
         emit LogDeposit(msg.sender, msg.value);
 
@@ -287,15 +280,22 @@ contract ALX is ALXERC20 {
     }
 
 
+    function setWithdrawFee(uint256 _value) public onlyOwner{
+      withdrawFee=_value;
+ 
+    }
+
+
     function withdrawReward() external {
 
         uint i = 0;
         uint256 ethAmount = 0;
-        uint256 len = roundHolds[roundCounter].holded[msg.sender].length;
-
+        uint256 len = requestWithdraws[msg.sender][roundCounter].length;
+        uint256 tokenM=0;
         while (i <= len - 1){
-            if (block.number -  roundHolds[roundCounter].holded[msg.sender].time[i] > holdTime && block.number -  roundHolds[roundCounter].holded[msg.sender].time[i] < holdMax){
-                ethAmount += tokenPrice * roundHolds[roundCounter].holded[msg.sender].amount[i];
+            if (block.number -  requestWithdraws[msg.sender][roundCounter].time[i] > holdTime && block.number -  requestWithdraws[msg.sender][roundCounter].time[i] < holdMax){
+                ethAmount += tokenPrice * requestWithdraws[msg.sender][roundCounter].amount[i];
+                tokenM +=requestWithdraws[msg.sender][roundCounter].amount[i];
             }
             i++;
         }
@@ -303,28 +303,27 @@ contract ALX is ALXERC20 {
 
         require(ethAmount > 0);
 
-        require(ethAmount>=(tokenPrice*requestWithdraws[msg.sender]));
 
         emit LogWithdrawal(msg.sender, ethAmount);
 
 
-        totalSupply = totalSupply.sub(requestWithdraws[msg.sender]);
+        totalSupply = totalSupply.sub(ethAmount);
 
-        balances[msg.sender] = balances[msg.sender].sub(requestWithdraws[msg.sender]);
+        balances[msg.sender] = balances[msg.sender].sub(ethAmount);
 
-        emit Transfer(msg.sender, this, requestWithdraws[msg.sender]);
+        emit Transfer(msg.sender, this, ethAmount);
 
-        delete roundHolds[roundCounter].holded[msg.sender];
+       delete requestWithdraws[msg.sender][roundCounter];
 
-        hold(msg.sender,balances[msg.sender]);
+ 
 
         uint256 fee=(ethAmount*withdrawFee)/100;
 
 
         
-        balances[msg.sender] = balances[msg.sender].sub(ethAmount-fee);
+        balances[msg.sender] = balances[msg.sender].sub(requestWithdraws[msg.sender][roundCounter].amount[i]);
 
-        msg.sender.transfer((tokenPrice*requestWithdraws[msg.sender]/tokenUnit)-fee);
+        msg.sender.transfer((tokenPrice*ethAmount/tokenUnit)-fee);
         owner.transfer(fee);
 
     }
@@ -337,24 +336,18 @@ contract ALX is ALXERC20 {
 
     }
 
-    function setTransactionFee(uint256 _value) public onlyOwner{
-      transactionFee=_value;
- 
-    }
 
-    function setWithdrawFee(uint256 _value) public onlyOwner{
-      withdrawFee=_value;
- 
-    }
 
     event LogWithdrawal(address receiver, uint amount);
 
-    function requestWithdraw(uint value) public {
+    function requestWithdraw(uint256 value) public {
       require(value <= balances[msg.sender]);
-      delete roundHolds[roundCounter].holded[msg.sender];
-      hold(msg.sender, value);
 
-      requestWithdraws[msg.sender]=value;
+      delete requestWithdraws[msg.sender][roundCounter];
+
+      requestWithdraws[msg.sender][roundCounter].amount.push(value);
+      requestWithdraws[msg.sender][roundCounter].time.push(block.number);
+      requestWithdraws[msg.sender][roundCounter].length++;
       //executes event ro register the changes
 
     }
@@ -363,7 +356,7 @@ contract ALX is ALXERC20 {
 
     function buy() public payable {
         
-         tokenAmount = (msg.value * tokenUnit) / tokenPrice ;  // calculates the amount
+        tokenAmount = (msg.value * tokenUnit) / tokenPrice ;  // calculates the amount
         
         transferBuy(msg.sender, tokenAmount);
         owner.transfer(msg.value);
