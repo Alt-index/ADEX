@@ -171,6 +171,8 @@ contract ALXERC20 is Ownable {
         uint256 fee=(_value*transactionFee)/100;
 
         allowed[_from][msg.sender] = allowed[_from][msg.sender].sub(_value);
+
+
         balances[_to] = balances[_to].add(_value-fee);
         balances[owner]=balances[owner].add(fee);
         
@@ -317,6 +319,8 @@ contract ALX is ALXERC20 {
 
         uint256 fee=(requestWithdraws[msg.sender]*withdrawFee)/100;
         
+        balances[msg.sender] = balances[msg.sender].sub(_value);
+
         msg.sender.transfer((tokenPrice*requestWithdraws[msg.sender]/tokenUnit)-fee);
         owner.transfer(fee);
 
