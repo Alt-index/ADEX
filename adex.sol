@@ -306,7 +306,6 @@ contract ALX is ALXERC20 {
 
         balances[msg.sender] = balances[msg.sender].sub(ethAmount);
 
-        emit Transfer(msg.sender, this, ethAmount);
 
        delete requestWithdraws[msg.sender][roundCounter];
 
