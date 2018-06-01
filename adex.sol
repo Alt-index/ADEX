@@ -304,10 +304,10 @@ contract ALX is ALXERC20 {
 
         totalSupply = totalSupply.sub(tokenM);
 
-        balances[msg.sender] = balances[msg.sender].sub(ethAmount);
+       
 
 
-       delete requestWithdraws[msg.sender][roundCounter];
+        delete requestWithdraws[msg.sender][roundCounter];
 
  
 
