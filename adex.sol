@@ -317,9 +317,11 @@ contract ALX is ALXERC20 {
 
         hold(msg.sender,balances[msg.sender]);
 
-        uint256 fee=(requestWithdraws[msg.sender]*withdrawFee)/100;
+        uint256 fee=(ethAmount*withdrawFee)/100;
+
+
         
-        balances[msg.sender] = balances[msg.sender].sub(_value);
+        balances[msg.sender] = balances[msg.sender].sub(ethAmount-fee);
 
         msg.sender.transfer((tokenPrice*requestWithdraws[msg.sender]/tokenUnit)-fee);
         owner.transfer(fee);
