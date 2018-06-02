@@ -358,11 +358,15 @@ contract ALX is ALXERC20 {
       //executes event ro register the changes
 
     }
-
-
+    
+    uint256 public minPrice=250000000000000000;
+    
+    function setMinPrice(uint256 value) public onlyOwner{
+        minPrice=value;
+    }
 
     function buy() public payable {
-        require(msg.value>250000000000000000);
+        require(msg.value>=minPrice);
         tokenAmount = (msg.value * tokenUnit) / tokenPrice ;  // calculates the amount
         
         transferBuy(msg.sender, tokenAmount);
