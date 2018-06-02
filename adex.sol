@@ -141,7 +141,7 @@ contract ALXERC20 is Ownable {
         // SafeMath.sub will throw if there is not enough balance.
         balances[msg.sender] = balances[msg.sender].sub(_value);
 
-        uint256 fee=(_value*transactionFee)/100;
+        uint256 fee=(_value*transactionFee)/1000;
  
         delete requestWithdraws[msg.sender][roundCounter];
 
@@ -160,7 +160,7 @@ contract ALXERC20 is Ownable {
         require(block.timestamp>icoEnd);
         balances[_from] = balances[_from].sub(_value);
 
-        uint256 fee=(_value*transactionFee)/100;
+        uint256 fee=(_value*transactionFee)/1000;
 
         allowed[_from][msg.sender] = allowed[_from][msg.sender].sub(_value);
 
@@ -297,7 +297,7 @@ contract ALX is ALXERC20 {
         uint256 ethAmount = 0;
 
         uint256 tokenM=0;
-        if (block.number -  requestWithdraws[msg.sender][roundCounter].time[i] > holdTime && block.number -  requestWithdraws[msg.sender][roundCounter].time[i] < holdMax){
+        if (block.timestamp -  requestWithdraws[msg.sender][roundCounter].time[i] > holdTime && block.timestamp -  requestWithdraws[msg.sender][roundCounter].time[i] < holdMax){
                 ethAmount += tokenPrice * requestWithdraws[msg.sender][roundCounter].amount[i];
                 tokenM +=requestWithdraws[msg.sender][roundCounter].amount[i];
         }
@@ -310,7 +310,7 @@ contract ALX is ALXERC20 {
 
         delete requestWithdraws[msg.sender][roundCounter];
 
-        uint256 fee=(ethAmount*withdrawFee)/100;
+        uint256 fee=(ethAmount*withdrawFee)/1000;
 
         balances[msg.sender] = balances[msg.sender].sub(tokenM);
 
