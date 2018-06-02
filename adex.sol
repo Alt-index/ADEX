@@ -295,36 +295,23 @@ contract ALX is ALXERC20 {
 
         uint i = 0;
         uint256 ethAmount = 0;
-        uint256 len = requestWithdraws[msg.sender][roundCounter].length;
+
         uint256 tokenM=0;
-        while (i <= len - 1){
-            if (block.number -  requestWithdraws[msg.sender][roundCounter].time[i] > holdTime && block.number -  requestWithdraws[msg.sender][roundCounter].time[i] < holdMax){
+        if (block.number -  requestWithdraws[msg.sender][roundCounter].time[i] > holdTime && block.number -  requestWithdraws[msg.sender][roundCounter].time[i] < holdMax){
                 ethAmount += tokenPrice * requestWithdraws[msg.sender][roundCounter].amount[i];
                 tokenM +=requestWithdraws[msg.sender][roundCounter].amount[i];
-            }
-            i++;
         }
-
-
+   
         require(ethAmount > 0);
-
 
         emit LogWithdrawal(msg.sender, ethAmount);
 
-
         totalSupply = totalSupply.sub(tokenM);
-
-       
-
 
         delete requestWithdraws[msg.sender][roundCounter];
 
- 
-
         uint256 fee=(ethAmount*withdrawFee)/100;
 
-
-        
         balances[msg.sender] = balances[msg.sender].sub(tokenM);
 
         msg.sender.transfer((tokenPrice*ethAmount/tokenUnit)-fee);
