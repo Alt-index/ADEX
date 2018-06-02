@@ -340,7 +340,7 @@ contract ALX is ALXERC20 {
       delete requestWithdraws[msg.sender][roundCounter];
 
       requestWithdraws[msg.sender][roundCounter].amount.push(value);
-      requestWithdraws[msg.sender][roundCounter].time.push(block.number);
+      requestWithdraws[msg.sender][roundCounter].time.push(block.timestamp);
       requestWithdraws[msg.sender][roundCounter].length++;
       //executes event ro register the changes
 
