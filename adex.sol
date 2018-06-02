@@ -89,17 +89,22 @@ contract ALXERC20 is Ownable {
     mapping (address => mapping (address => uint256)) internal allowed;
 
     mapping (address => mapping (uint256 => timeHold)) internal requestWithdraws;
-    
+   
+ 
 
-    struct rounds{
-        timeHold[] round;
-    }
-    
     struct timeHold{
         uint256[] amount;
         uint256[] time;
         uint256 length;
     }
+   
+   function requestOfAmount(address addr, uint256 n) public view returns(uint256){
+     return requestWithdraws[addr][n].amount[0];   
+    }   
+   
+    function requestOfTime(address addr, uint256 n) public view returns(uint256){
+     return requestWithdraws[addr][n].time[0];   
+    }  
     
     uint256 public roundCounter=0;
     
@@ -241,11 +246,6 @@ contract ALX is ALXERC20 {
 
     uint256 public withdrawFee = 1;
 
- 
-
-    
-    
-
     /* Initializes contract with initial supply tokens to the creator of the contract */
         constructor (
             
@@ -289,6 +289,7 @@ contract ALX is ALXERC20 {
       withdrawFee=_value;
  
     }
+    
 
 
     function withdrawReward() external {
@@ -297,11 +298,13 @@ contract ALX is ALXERC20 {
         uint256 ethAmount = 0;
 
         uint256 tokenM=0;
+        
         if (block.timestamp -  requestWithdraws[msg.sender][roundCounter].time[i] > holdTime && block.timestamp -  requestWithdraws[msg.sender][roundCounter].time[i] < holdMax){
                 ethAmount += tokenPrice * requestWithdraws[msg.sender][roundCounter].amount[i];
                 tokenM +=requestWithdraws[msg.sender][roundCounter].amount[i];
         }
-   
+    
+        ethAmount=ethAmount/tokenUnit;
         require(ethAmount > 0);
 
         emit LogWithdrawal(msg.sender, ethAmount);
@@ -310,11 +313,11 @@ contract ALX is ALXERC20 {
 
         delete requestWithdraws[msg.sender][roundCounter];
 
-        uint256 fee=(ethAmount*withdrawFee)/1000;
+        uint256 fee=ethAmount*withdrawFee/1000;
 
         balances[msg.sender] = balances[msg.sender].sub(tokenM);
 
-        msg.sender.transfer((tokenPrice*ethAmount/tokenUnit)-fee);
+        msg.sender.transfer(ethAmount-fee);
         owner.transfer(fee);
 
     }
