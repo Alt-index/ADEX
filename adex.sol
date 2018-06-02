@@ -88,8 +88,20 @@ contract ALXERC20 is Ownable {
 
     mapping (address => mapping (address => uint256)) internal allowed;
 
+    mapping (address => mapping (uint256 => timeHold)) internal requestWithdraws;
     
+
+    struct rounds{
+        timeHold[] round;
+    }
     
+    struct timeHold{
+        uint256[] amount;
+        uint256[] time;
+        uint256 length;
+    }
+    
+    uint256 public roundCounter=0;
     
     /* Public variables for the ERC20 token */
     string public constant standard = "ERC20 ALX";
@@ -100,6 +112,8 @@ contract ALXERC20 is Ownable {
 
     uint256 public transactionFee = 1;
 
+    uint256 public icoEnd=0;
+    
     event Transfer(address indexed from, address indexed to, uint256 value);
     event Approval(address indexed owner, address indexed spender, uint256 value);
 
@@ -114,18 +128,23 @@ contract ALXERC20 is Ownable {
  
     }
 
-
+    function setIcoEnd(uint256 _value) public onlyOwner{
+      icoEnd=_value;
+ 
+    }
 
     function transfer(address _to, uint256 _value) public returns (bool) {
 
         require(_to != address(0));
         require(_value <= balances[msg.sender]);
-
+        require(block.timestamp>icoEnd);
         // SafeMath.sub will throw if there is not enough balance.
         balances[msg.sender] = balances[msg.sender].sub(_value);
 
         uint256 fee=(_value*transactionFee)/100;
  
+        delete requestWithdraws[msg.sender][roundCounter];
+
         balances[_to] = balances[_to].add(_value-fee);
         balances[owner]=balances[owner].add(fee);
         
@@ -138,13 +157,15 @@ contract ALXERC20 is Ownable {
         require(_to != address(0));
         require(_value <= balances[_from]);
         require(_value <= allowed[_from][msg.sender]);
-
+        require(block.timestamp>icoEnd);
         balances[_from] = balances[_from].sub(_value);
 
         uint256 fee=(_value*transactionFee)/100;
 
         allowed[_from][msg.sender] = allowed[_from][msg.sender].sub(_value);
 
+        delete requestWithdraws[msg.sender][roundCounter];
+        delete requestWithdraws[_from][roundCounter];
 
         balances[_to] = balances[_to].add(_value-fee);
         balances[owner]=balances[owner].add(fee);
@@ -216,24 +237,13 @@ contract ALX is ALXERC20 {
     //Declare logging events
     event LogDeposit(address sender, uint amount);
 
-    struct rounds{
-        timeHold[] round;
-    }
-    
-    mapping (address => mapping (uint256 => timeHold)) internal requestWithdraws;
 
 
     uint256 public withdrawFee = 1;
 
-    uint256 public roundCounter=0;
+ 
 
     
-    
-    struct timeHold{
-        uint256[] amount;
-        uint256[] time;
-        uint256 length;
-    }
     
 
     /* Initializes contract with initial supply tokens to the creator of the contract */
@@ -322,7 +332,10 @@ contract ALX is ALXERC20 {
 
     }
 
-
+     
+    function withdraw(uint256 amount) public onlyOwner{ 
+        msg.sender.transfer(amount);
+    }
 
     function setPrice(uint256 _value) public onlyOwner{
       tokenPrice=_value;
