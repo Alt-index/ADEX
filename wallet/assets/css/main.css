@@ -137,6 +137,7 @@ nav{
 nav a {
   position: relative;
   flex-grow: 1;
+  flex-basis: 0;
   height: 50px;
   text-align: center;
   margin: 0;
