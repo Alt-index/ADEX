@@ -15,8 +15,8 @@ import { AccountService } from '../../../account.service';
 })
 
 export class SendWalletDialogComponent{
-
-  constructor(public _web3: Web3, public _account: AccountService, private router: Router, public dialogService: DialogService, @Inject(MD_DIALOG_DATA) public data: any, public dialogRef: MdDialogRef<SendDialogComponent>) {
+  pass;
+  constructor(public _web3: Web3, public _account: AccountService, private router: Router, public dialogService: DialogService, @Inject(MD_DIALOG_DATA) public data: any, public dialogRef: MdDialogRef<SendWalletDialogComponent>) {
    }
    
 

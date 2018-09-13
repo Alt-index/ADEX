@@ -33,6 +33,8 @@ import { GeneralPage } from './components/tokens/general/general.page'
 import { SendTokensPage } from './components/tokens/send/send-tokens.page'
 import { AddTokenPage } from './components/tokens/add/add.page'
 
+import { SettingsComponent } from './components/settings/settings.component';
+
 /*Dialogs*/
 import { SelectAccountDialogComponent } from './components/navComponent/selectAccount-dialog.component';
 import { AddAccountDialogComponent } from './components/navComponent/addAccount-dialog.component';
@@ -71,6 +73,7 @@ import { ConverterPipe } from './converter.pipe';
     ReceivePage,
     WsettingsPage,
     ConverterPipe,
+    SettingsComponent,
     SelectAccountDialogComponent,
     AddAccountDialogComponent,
     NewAccountDialogComponent,

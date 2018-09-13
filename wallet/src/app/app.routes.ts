@@ -9,6 +9,8 @@ import { SendPage } from './components/wallet/send/send.page'
 import { ReceivePage } from './components/wallet/receive/receive.page'
 import { WsettingsPage } from './components/wallet/wsettings/wsettings.page'
 
+import { SettingsComponent } from './components/settings/settings.component';
+
 import { TokensComponent } from './components/tokens/tokens.component'
 import { GeneralPage } from './components/tokens/general/general.page'
 import { SendTokensPage } from './components/tokens/send/send-tokens.page'
@@ -32,6 +34,7 @@ const routes: Routes = [
       { path: 'add', component: AddTokenPage },
     ]
   },
+  { path: 'settings', component: SettingsComponent },
   { path: '', redirectTo: '/wallet/global', pathMatch: 'full' },
   { path: '**', redirectTo: '/wallet/global', pathMatch: 'full' },
 ];
