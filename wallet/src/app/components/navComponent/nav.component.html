@@ -1,6 +1,6 @@
 <div id="account">
     <div *ngIf="_account?.account" mdTooltip="{{_account.account.name}}" mdTooltipPosition="right">
-        <p >{{_account.account.name}}</p>
+        <p>{{_account.account.name}}</p>
     </div>
 </div>
 <button class="link" routerLink="/wallet" routerLinkActive="active" #wallet="routerLinkActive">
@@ -18,7 +18,3 @@
     <button *ngIf="!_account?.account.addresss" class="btn-solid" (click)="openSelectAccount()">My accounts</button>
     <button class="btn-solid" (click)="openAddAccount()">Add account</button>
 </div>
-
-
-
-

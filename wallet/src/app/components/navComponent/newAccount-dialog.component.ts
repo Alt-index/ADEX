@@ -18,6 +18,8 @@ import { MdDialogRef } from '@angular/material';
 
 export class NewAccountDialogComponent {
   nameAccount:string;
+  pass;
+  pass2;
   constructor(public dialogRef: MdDialogRef<NewAccountDialogComponent>, private _wallet: WalletService,
               private _account: AccountService, public dialog: MdDialog,private dialogService: DialogService) {
       

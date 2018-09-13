@@ -1,4 +1,5 @@
 import { Component, OnInit, OnChanges, Input } from '@angular/core';
+import { AccountService } from '../../../account.service';
 
 @Component({
   selector: 'app-list',
@@ -15,7 +16,7 @@ export class ListComponent implements OnInit, OnChanges {
 
     items: any[];
 
-    constructor() {
+    constructor(protected _account: AccountService) {
     }
 
     ngOnInit(): void {
@@ -29,6 +30,10 @@ export class ListComponent implements OnInit, OnChanges {
             this.getItmes();
         }
   
+    }
+    openExternal(txHash){
+        const shell = require('electron').shell;
+        shell.openExternal('https://ropsten.etherscan.io/tx/'+txHash);
     }
 
     getItmes(): void {

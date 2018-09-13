@@ -46,7 +46,7 @@ import { ErrorDialogComponent } from './components/dialogs/error-dialog.componen
 import { LoadingDialogComponent } from './components/dialogs/loading-dialog.component';
 import { WaitingDialogComponent } from './components/dialogs/waiting-dialog.component';
 import { PendingDialogComponent } from './components/dialogs/pending-dialog.component';
-
+import { SendWalletDialogComponent } from './components/wallet/send/send-dialog.component';
 
 /*Servicies*/
 import { WalletService } from './wallet.service';
@@ -75,6 +75,7 @@ import { ConverterPipe } from './converter.pipe';
     AddAccountDialogComponent,
     NewAccountDialogComponent,
     ImportAccountDialogComponent,
+    SendWalletDialogComponent,
     SendDialogComponent,
     DeleteComponent,
     ErrorDialogComponent,
@@ -114,6 +115,7 @@ import { ConverterPipe } from './converter.pipe';
     AddAccountDialogComponent,
     NewAccountDialogComponent,
     ImportAccountDialogComponent,
+    SendWalletDialogComponent,
     SendDialogComponent,
     DeleteComponent,
     ErrorDialogComponent,

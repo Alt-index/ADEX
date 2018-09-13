@@ -21,6 +21,9 @@ export class ImportAccountDialogComponent{
   nameAccount:string;
   importType= "keystore";
   submited : boolean = false;
+  input;
+  password;
+  password2;
 
   constructor(public dialogRef: MdDialogRef<ImportAccountDialogComponent>, private _wallet: WalletService,
                private _account: AccountService, public dialog: MdDialog, private dialogService: DialogService) {

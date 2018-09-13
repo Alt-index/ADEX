@@ -4,6 +4,7 @@ import { Router } from '@angular/router'
 /*Services*/
 import { AccountService } from '../../../account.service'
 import { TokenService } from '../../../token.service';
+import { DialogService } from '../../../dialog.service';
 
 import * as EthUtil from 'ethereumjs-util';
 
@@ -17,7 +18,7 @@ export class AddTokenPage implements OnInit {
   token:any = {}
   isToken = false;
 
-  constructor(protected _account: AccountService, private _token: TokenService, private router: Router) {
+  constructor(protected _account: AccountService, private _token: TokenService, private router: Router, private _dialog: DialogService) {
     // console.log('SendPage')
   }
 
@@ -35,7 +36,7 @@ export class AddTokenPage implements OnInit {
         error = true;
       }
       if(!error){
-        console.log("sin erro")
+        
         this.token.tokenDecimal = await this._token.getDecimal();
         this.token.tokenName = await this._token.getName();
         this.token = await this._account.updateTokenBalance(this.token)
@@ -46,11 +47,20 @@ export class AddTokenPage implements OnInit {
   }
 
   addToken(){
-    if(this.isToken){
-      console.log(this.token.tokenSymbol,this.token.tokenDecimal,this._token.token )
-      this._account.addToken(this.token),
-      this.reset();
-      this.router.navigate(['/tokens/general']);
+    let isToken = this._account.account.tokens.findIndex(token => token.contractAddress.toLowerCase() == this.token.contractAddress.toLowerCase())
+    if(isToken != -1){
+        let title = 'Unable to add token';
+        let message = 'Something was wrong';
+        let error = 'The token you are trying to import is a duplicate'
+        let dialogRef = this._dialog.openErrorDialog(title, message, error)
+
+    }else{
+      if(this.isToken){
+        console.log(this.token.tokenSymbol,this.token.tokenDecimal,this._token.token )
+        this._account.addToken(this.token),
+        this.reset();
+        this.router.navigate(['/tokens/general']);
+      }
     }
   }
 

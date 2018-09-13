@@ -3,5 +3,5 @@
 <div *ngIf="_account.account.history?.length == 0">
     <p class="backWhite text-center">There are not transactions</p>
 </div>
-  
+
 <app-list *ngIf="_account.account.history?.length > 0" [history]="_account.account.history" [address]="_account.account.address"></app-list>

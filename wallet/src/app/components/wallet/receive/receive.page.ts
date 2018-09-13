@@ -13,7 +13,7 @@ import { AccountService } from '../../../account.service'
   templateUrl: './receive.html',
 })
 export class ReceivePage implements OnInit {
-  constructor(private _account: AccountService,) {
+  constructor(protected _account: AccountService,) {
 
   }
 

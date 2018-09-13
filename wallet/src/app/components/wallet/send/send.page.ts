@@ -22,6 +22,7 @@ export class SendPage implements OnInit {
     receiver:"",
     amount:""
   }
+  trans_data;
 
   constructor(public _web3: Web3,private _account: AccountService, private sendDialogService: SendDialogService) {
     // console.log('SendPage')
@@ -33,7 +34,7 @@ export class SendPage implements OnInit {
 
   checkAddress(receiverAddr): boolean {
     if(!EthUtil.isValidAddress(receiverAddr)){
-      this.errors.receiver = "invalid receiver address";
+      this.errors.receiver = "Invalid receiver address";
       return false
     }else{
       this.errors.receiver =  ""
@@ -68,7 +69,7 @@ export class SendPage implements OnInit {
       gasLimit: this._web3.web3.toHex(21000),
       to: receiverAddr,
       value: this._web3.web3.toHex(amountW),
-      data:'',
+      data:this._web3.web3.toHex(trans_data),
       chainId:'0x3'
     }
     //console.log(txParams)

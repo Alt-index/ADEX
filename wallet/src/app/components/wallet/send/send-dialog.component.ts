@@ -1,19 +1,20 @@
-import { Component, Inject  } from '@angular/core'
-import { Router } from '@angular/router'
+import { Component, Inject  } from '@angular/core';
+import { Router } from '@angular/router';
 
-import { DialogService } from '../../../dialog.service'
+import { DialogService } from '../../../dialog.service';
 import { MdDialogRef } from '@angular/material';
 import { MD_DIALOG_DATA } from '@angular/material';
 
 
-import { Web3 } from '../../../web3.service'
-import { AccountService } from '../../../account.service'
+import { Web3 } from '../../../web3.service';
+import { AccountService } from '../../../account.service';
 
 @Component({
   selector: 'send-dialog',
   templateUrl: './send-dialog.component.html'
 })
-export class SendDialogComponent{
+
+export class SendWalletDialogComponent{
 
   constructor(public _web3: Web3, public _account: AccountService, private router: Router, public dialogService: DialogService, @Inject(MD_DIALOG_DATA) public data: any, public dialogRef: MdDialogRef<SendDialogComponent>) {
    }
