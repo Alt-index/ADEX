@@ -36,7 +36,7 @@ export class AddTokenPage implements OnInit {
         error = true;
       }
       if(!error){
-        
+        console.log("sin erro")
         this.token.tokenDecimal = await this._token.getDecimal();
         this.token.tokenName = await this._token.getName();
         this.token = await this._account.updateTokenBalance(this.token)
@@ -77,5 +77,4 @@ export class AddTokenPage implements OnInit {
     
   }
 }
-
 

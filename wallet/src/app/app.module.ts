@@ -18,6 +18,7 @@ import { AppRoutingModule } from './app.routes';
 /*Components*/
 import { MyApp } from './app.component';
 import { NavComponent } from './components/navComponent/nav.component'
+import { NetWorkComponent } from './components/network/network.component';
 
 import { PaginatorComponent } from './components/paginator/paginator.component'
 
@@ -48,7 +49,8 @@ import { ErrorDialogComponent } from './components/dialogs/error-dialog.componen
 import { LoadingDialogComponent } from './components/dialogs/loading-dialog.component';
 import { WaitingDialogComponent } from './components/dialogs/waiting-dialog.component';
 import { PendingDialogComponent } from './components/dialogs/pending-dialog.component';
-import { SendWalletDialogComponent } from './components/wallet/send/send-dialog.component';
+import { SendWalletDialogComponent } from './components/wallet/send/send-dialog.component'
+import { MessageDialogComponent } from './components/dialogs/message-dialog.component';
 
 /*Servicies*/
 import { WalletService } from './wallet.service';
@@ -57,22 +59,26 @@ import { Web3 } from './web3.service';
 import { DialogService } from './dialog.service';
 import { SendDialogService } from './send-dialog.service';
 import { TokenService } from './token.service';
+import { EtherscanService } from './etherscan.service';
+import { RawTxService } from './rawtx.sesrvice'
 
 /*Pipes*/
 import { ConverterPipe } from './converter.pipe';
-
+import { SeparateWordsPipe } from './pipes/words.pipe';
 
 
 @NgModule({
   declarations: [
     MyApp,
     NavComponent,
+    NetWorkComponent,
     WalletComponent,
     GlobalPage,
     SendPage,
     ReceivePage,
     WsettingsPage,
     ConverterPipe,
+    SeparateWordsPipe,
     SettingsComponent,
     SelectAccountDialogComponent,
     AddAccountDialogComponent,
@@ -90,6 +96,7 @@ import { ConverterPipe } from './converter.pipe';
     ListComponent,
     PaginatorComponent,
     TokensComponent,
+    MessageDialogComponent,
     GeneralPage,
     SendTokensPage,
     AddTokenPage
@@ -127,6 +134,7 @@ import { ConverterPipe } from './converter.pipe';
     PendingDialogComponent,
     JSONDialogComponent,
     PrivateKeyDialogComponent,
+    MessageDialogComponent
   ],
   providers: [
     WalletService,
@@ -134,7 +142,9 @@ import { ConverterPipe } from './converter.pipe';
     Web3,
     DialogService,
     SendDialogService,
-    TokenService
+    TokenService,
+    RawTxService,
+    EtherscanService
   ],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })

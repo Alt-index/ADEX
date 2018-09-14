@@ -4,7 +4,7 @@ import { Component, OnInit } from '@angular/core'
 declare var require: any;
 import * as QRcode from 'qrcode';
 
-import { AccountService } from '../../../account.service'
+import { AccountService } from '../../../account.service';
 
 
 
@@ -13,7 +13,7 @@ import { AccountService } from '../../../account.service'
   templateUrl: './receive.html',
 })
 export class ReceivePage implements OnInit {
-  constructor(protected _account: AccountService,) {
+  constructor(private _account: AccountService,) {
 
   }
 

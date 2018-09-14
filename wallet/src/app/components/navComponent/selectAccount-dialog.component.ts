@@ -9,6 +9,7 @@ import { AccountService } from '../../account.service'
 import { WalletService } from '../../wallet.service'
 
 
+
 @Component({
   selector: 'selectAccount-dialog',
   templateUrl: './selectAccount-dialog.component.html',
@@ -18,7 +19,7 @@ export class SelectAccountDialogComponent implements OnInit{
 
   selectedAcc;
 
-  constructor(public dialog: MdDialog, public dialogRef: MdDialogRef<SelectAccountDialogComponent>, public _account: AccountService, protected _wallet: WalletService) {
+  constructor(public dialog: MdDialog, public dialogRef: MdDialogRef<SelectAccountDialogComponent>, public _account: AccountService, private _wallet: WalletService) {
 
   }
   ngOnInit(){
@@ -31,6 +32,7 @@ export class SelectAccountDialogComponent implements OnInit{
   selectAccount(){
     if(this._account.account.address != this.selectedAcc.address){
       this._account.setAccount(this.selectedAcc);
+      
       this.dialogRef.close('loading');
     }else{
       this.dialogRef.close();

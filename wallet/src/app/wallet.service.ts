@@ -6,7 +6,6 @@ import * as EthUtil from 'ethereumjs-util';
 
 @Injectable()
 export class WalletService {
-  apikey: string = 'JDVE27WHYITCKM7Q2DMBC3N65VDIZ74HHJ';
   wallet: Array<any>;
 
   constructor() {

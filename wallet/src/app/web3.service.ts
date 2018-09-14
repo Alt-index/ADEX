@@ -1,46 +1,60 @@
 import { Injectable} from '@angular/core';
 
-var Web3L = require('web3');
+import * as Web3L from 'web3';
 
 @Injectable()
 export class Web3 {
-  web3;
-  infuraKey;
+  web3: Web3L;
+  infuraKey = "";
+  network: number;
+  
   constructor(){
-    if (typeof this.web3 !== 'undefined') {
-      this.web3= new Web3L(this.web3.currentProvider);
-    } else {
-      this.getInfuraKey();
-      // set the provider you want from Web3.providers
-      this.web3 = new Web3L(new Web3L.providers.HttpProvider("https://ropsten.infura.io/"+this.infuraKey));
+    this.getIntialNetwork();
+    this.getInfuraKey();
+    if(this.infuraKey!=""){
+      if (typeof this.web3 !== 'undefined') {
+        this.web3= new Web3L(this.web3.currentProvider);
+      } else {  
+        // set the provider you want from Web3.providers
+        this.setProvider();
+      }
+    }else{
+      this.web3= new Web3L()
     }
-  }
 
+    console.log("network", this.network)
+  }
   setInfuraKey(apikey){
-  this.infuraKey = apikey;
-  let apikeys: any = {};
-  if(localStorage.getItem('apikeys')){
-    apikeys = JSON.parse(localStorage.getItem('apikeys'));
+    this.infuraKey = apikey;
+    let apikeys: any = {};
+    if(localStorage.getItem('apikeys')){
+      apikeys = JSON.parse(localStorage.getItem('apikeys'));
+    }
+      apikeys.inf = apikey;
+      localStorage.setItem('apikeys', JSON.stringify(apikeys));
   }
-    apikeys.inf = apikey;
-    localStorage.setItem('apikeys', JSON.stringify(apikeys));
-
-}
-getInfuraKey(){
-  if(localStorage.getItem('apikeys')){
-    let apikeys : any = JSON.parse(localStorage.getItem('apikeys'));
-    if('inf' in apikeys){
-      this.infuraKey = apikeys.inf;
+  getInfuraKey(){
+    if(localStorage.getItem('apikeys')){
+      let apikeys : any = JSON.parse(localStorage.getItem('apikeys'));
+      if('inf' in apikeys){
+        this.infuraKey = apikeys.inf;
+      }
     }
   }
-}
 
   estimateGas(from, to, data, amount?):Promise<number>{
-    let value = (typeof(amount)== 'undefined')? 0 : "0x"+amount.toString(16)
-    //console.log("from:", from,", to:",to,", data:",data,", value:",amount)
+    let options: any={from:from}
+    options.value = (typeof(amount)== 'undefined')? 0 : "0x"+amount.toString(16);
+    if(to != ''){
+      options.to = to
+    }
+    if(data != ''){
+      options.data = this.web3.toHex(data)
+    }
+
     let self = this;
     return new Promise((resolve, reject)=>{
-      self.web3.eth.estimateGas({from: from,to:to,data:data, value:amount},(err, result)=>{
+      self.web3.eth.estimateGas(options,(err, result)=>{
         if(err){
           reject(err)
         }else{
@@ -49,53 +63,107 @@ getInfuraKey(){
         console.log("result",result)
       })
     })
+  }
+
+  async blockGas(){
+    let self = this;
+    let block = await new Promise((resolve, reject)=>{
+      self.web3.eth.getBlockNumber((err, result)=>{
+        if(err){
+          reject(err)
+        }else{
+          resolve(result)
+        }
+      })
+    })
+
+    console.log("block", block)
+    return new Promise((resolve, reject)=>{
+      self.web3.eth.getBlock(block, (err, result)=>{
+        if(err){
+          reject(err)
+        }else{
+          resolve(result.gasLimit)
+        }
+      })
+    })
 
   }
 
-  setProvider(network:number){
-   let net = (network==1)? 'mainnet' : 'ropsten'
-   let url= "https://"+net+".infura.io/"+this.infuraKey;
+  setProvider(){
+    let net = (this.network==1)? 'mainnet' : 'ropsten'
+    let url= "https://"+net+".infura.io/"+this.infuraKey;
+    this.web3 = new Web3L(new Web3L.providers.HttpProvider(url));
+  }
 
-   this.web3.setProvider(new Web3L.providers.HttpProvider(url));
- }
+  setNetwork(network:number){
+    this.network = network;
+    localStorage.setItem('network', JSON.stringify(network))
+    let net = (this.network==1)? 'mainnet' : 'ropsten'
+    this.setProvider();
+  }
 
-  async getBlockTimestamp(txhash){
+  getIntialNetwork() {
+    if(!localStorage.getItem('network')){
+      this.network = 1
+    }else{
+      this.network = JSON.parse(localStorage.getItem('network'));
+    }
+  }
+
+  async getTxStatus(txhash){
     let tx: any = await this.getTx(txhash);
     let self= this;
     let recepit;
     let interval;
-    let AsyncFunction = new Promise (function (resolve, reject) {
+    let AsyncFunction = new Promise (function (resolve, reject) {      
         if (tx.blockNumber == null) {
-          let count = 0;
+          let count = 0;          
           interval = setInterval( async function(){
             console.log(count,": ",tx.blockNumber);
             tx = await self.getTx(txhash);
-            if(tx.blockNumber != null){
+            if(tx.blockNumber != null){  
               clearInterval(interval)
-
+              
               interval = setInterval(function(){
-                let timestamp =  self.web3.eth.getBlock(tx.blockNumber).timestamp;
                 let status = self.web3.eth.getTransactionReceipt(txhash).status;
-                console.log('echooo, ',tx.blockNumber, ": ", timestamp,"--", status)
                 if(status==1 || status==0){
                   clearInterval(interval)
-                  resolve(parseInt(status));
+                  resolve(parseInt(status)); 
                 }
-              })
+              }) 
             }
             count ++
           }, 2000)
         }
     });
-
-
+      
     return await AsyncFunction;
   }
+
+  async getTxContractAddress(txhash){
+    let self= this;
+    let interval;
+    let AsyncFunction = new Promise (function (resolve, reject) {      
+      self.web3.eth.getTransactionReceipt(txhash, function(err, res) {
+        if (!err){
+          if(res!= null){
+            if(res.contractAddress!= null){
+              resolve(res.contractAddress)
+            }
+          } 
+        }
+      })
+    });
+      
+    return await AsyncFunction;
+  }
+
   async sendRawTx(txData:string){
 
     let self= this;
 
-    let AsyncFunction = new Promise (function (resolve, reject) {
+    let AsyncFunction = new Promise (function (resolve, reject) {      
       self.web3.eth.sendRawTransaction(txData, function(err, hash) {
         if (!err){
           resolve(hash)
@@ -118,7 +186,7 @@ getInfuraKey(){
         }else{
           reject(err)
         }
-      }));
+      }));  
     });
 
     return await AsyncFunction;
@@ -134,11 +202,11 @@ getInfuraKey(){
           console.log("error", err)
           reject(err);
         } else {
-          resolve(res);
+          resolve(res); 
         }
       })
     });
-
+    
     return AsyncFunction
   }
 

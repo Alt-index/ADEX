@@ -3,6 +3,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core'
 /*Services*/
 import { AccountService } from '../../../account.service'
 import { TokenService } from '../../../token.service';
+import { Web3 } from '../../../web3.service';
 
 
 @Component({
@@ -13,7 +14,7 @@ import { TokenService } from '../../../token.service';
 export class GeneralPage implements OnInit, OnDestroy {
   interval;
 
-  constructor(protected _account: AccountService, private _token: TokenService) {
+  constructor(protected _account: AccountService, private _token: TokenService, private _web3: Web3) {
     // console.log('SendPage')
   }
 
@@ -23,7 +24,8 @@ export class GeneralPage implements OnInit, OnDestroy {
 
   openExternal(txHash){
     const shell = require('electron').shell;
-    shell.openExternal('https://ropsten.etherscan.io/token/'+txHash+'?a='+this._account.account.address);
+    let net = (this._web3.network == 1) ? "" : "ropsten.";
+    shell.openExternal('https://'+net+'etherscan.io/token/'+txHash+'?a='+this._account.account.address);
   }
 
   ngOnDestroy(){

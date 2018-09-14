@@ -1,11 +1,11 @@
 <div>
-    <h1 style="text-align: center">Import account<img class="right" src="~icons/cross_icon.svg" (click)="closeDialog()"></h1>
+    <h1 class="text-center">Import account<img class="right" src="~icons/cross_icon.svg" (click)="closeDialog()"></h1>
 </div>
 <div class="radioDiv">
     <input type="radio" id="importTypeK" name="importType" value="keystore" [(ngModel)]="importType" />
     <label for="importTypeK" class="black"><span></span>Keystore</label>
     <input type="radio" id="importTypeP" name="importType" value="privateKey" [(ngModel)]="importType" />
-    <label for="importTypeP" class="black"><span></span>Private Key</label>
+    <label for="importTypeP" class="black"><span></span>Private key</label>
 </div>
 <div>
     <label class="title" for="nameAccount">Account name</label>
@@ -21,7 +21,7 @@
 </ng-template>
 <ng-template #privateKey>
     <div>
-        <label class="title" for="json">Private Key</label>
+        <label class="title" for="json">Private key</label>
         <textarea class="block scrollbar" id="json" required rows="2" [ngClass]="{'error': !checkInput(input)&& (privKey.dirty || privKey.touched || submited)}" placeholder="Paste your private key string here" [(ngModel)]="input" #privKey="ngModel"></textarea>
         <p [ngClass]="{'hidden': !(!checkInput(input) && (privKey.dirty || privKey.touched || submited))} " class="error">This field is required</p>
     </div>

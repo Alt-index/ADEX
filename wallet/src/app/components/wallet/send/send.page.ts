@@ -4,9 +4,10 @@ import * as EthUtil from 'ethereumjs-util';
 import * as EthTx from 'ethereumjs-tx';
 
 /*Services*/
-import { AccountService } from '../../../account.service'
-import { Web3 } from '../../../web3.service'
-import { SendDialogService } from '../../../send-dialog.service'
+import { AccountService } from '../../../account.service';
+import { Web3 } from '../../../web3.service';
+import { SendDialogService } from '../../../send-dialog.service';
+import { RawTxService } from '../../../rawtx.sesrvice';
 
 @Component({
   selector: 'send-page',
@@ -24,7 +25,7 @@ export class SendPage implements OnInit {
   }
   trans_data;
 
-  constructor(public _web3: Web3,private _account: AccountService, private sendDialogService: SendDialogService) {
+  constructor(public _web3: Web3,private _account: AccountService, private sendDialogService: SendDialogService,  private _rawtx: RawTxService) {
     // console.log('SendPage')
   }
 
@@ -34,7 +35,7 @@ export class SendPage implements OnInit {
 
   checkAddress(receiverAddr): boolean {
     if(!EthUtil.isValidAddress(receiverAddr)){
-      this.errors.receiver = "Invalid receiver address";
+      this.errors.receiver = "invalid receiver address";
       return false
     }else{
       this.errors.receiver =  ""
@@ -56,41 +57,14 @@ export class SendPage implements OnInit {
     if(this.checkAmount(amount) == false || this.checkAddress(receiverAddr) == false){
       return false;
     }
-
-    let chainId = 3;
-    let acc = this._account.account;
-    let amountW = this._web3.web3.toWei(amount,'ether');
-    let gasPrice  = this._web3.web3.toHex(this._web3.web3.toWei('1','gwei'));
-    let nonce = await this._web3.getNonce(acc.address)
-    
-    let txParams = {
-      nonce: nonce,
-      gasPrice: gasPrice,
-      gasLimit: this._web3.web3.toHex(21000),
-      to: receiverAddr,
-      value: this._web3.web3.toHex(amountW),
-      data:this._web3.web3.toHex(trans_data),
-      chainId:'0x3'
-    }
-    //console.log(txParams)
-    
-    let tx = new EthTx(txParams);
-    
-    txParams.gasLimit='0x'+tx.getBaseFee().toString(16);
-    let tx2= new EthTx(txParams);
-
-    let cost = parseInt(tx2.getUpfrontCost().toString());
-    let balance =  this._web3.web3.toWei(this._account.account.balance,'ether');
-
-    //console.log("value ",amount," cost:",cost,"---",balance);
-    if(cost> balance){ 
-      this.errors.amount = 'Insufficient funds';
-      return false;
+    let tx;
+    if(typeof(trans_data)=='undefined'){
+      tx =  await this._rawtx.createRaw(receiverAddr, amount)
     }else{
-      this.errors.amount ="";
+      tx =  await this._rawtx.createRaw(receiverAddr, amount, {data:trans_data})
     }
-
-    this.sendDialogService.openConfirmSend(tx2, receiverAddr, amount, (cost-amountW), cost, 'send')
+    
+    this.sendDialogService.openConfirmSend(tx[0], receiverAddr, tx[2],tx[1]-tx[2], tx[1], "send");
   }
 
 }

@@ -40,8 +40,8 @@
         </div>
     </a>
 </nav>
-<div class="content flex-inside">
-    <p *ngIf="!_account.account?.address; else content" style="text-align: center">Select an account</p>
+<div class="content scrollable-content flex-inside">
+    <p *ngIf="!_account.account?.address; else content" class="text-center">Select an account</p>
     <ng-template #content>
         <router-outlet></router-outlet>
     </ng-template>

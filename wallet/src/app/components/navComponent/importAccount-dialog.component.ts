@@ -8,8 +8,6 @@ import { DialogService } from '../../dialog.service'
 /*Dialog*/
 import { MdDialog } from '@angular/material';
 import { MdDialogRef } from '@angular/material';
-import { LoadingDialogComponent } from '../dialogs/loading-dialog.component';
-
 
 const EthUtils = require('ethereumjs-util')
 

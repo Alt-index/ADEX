@@ -22,9 +22,7 @@ export class WsettingsPage implements OnInit {
   show: boolean = false;
   message: string = "see password";
 
-  security;
-  password;
-  constructor(protected _account: AccountService, public dialog: MdDialog, private dialogService: DialogService) {
+  constructor(private _account: AccountService, public dialog: MdDialog, private dialogService: DialogService) {
   }
 
   ngOnInit() {

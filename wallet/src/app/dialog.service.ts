@@ -5,6 +5,8 @@ import { MdDialog } from '@angular/material';
 import { PendingDialogComponent } from './components/dialogs/pending-dialog.component';
 import { ErrorDialogComponent } from './components/dialogs/error-dialog.component';
 import { WaitingDialogComponent } from './components/dialogs/waiting-dialog.component';
+import { LoadingDialogComponent } from './components/dialogs/loading-dialog.component';
+import { MessageDialogComponent } from './components/dialogs/message-dialog.component';
 
 @Injectable()
 export class DialogService{
@@ -37,6 +39,24 @@ export class DialogService{
             height: '150px',
             data: text,
             disableClose: true,
+          });
+    }
+    openLoadingDialog(){
+        return this.dialog.open(LoadingDialogComponent, {
+            width: '660px',
+            height: '150px',
+            disableClose: true,
+          });
+    }
+
+    openMessageDialog(title, result){
+        return this.dialog.open(MessageDialogComponent, {
+            width: '660px',
+            height: '150px',
+            data: {
+              title: title,
+              result: result
+            }
           });
     }
 }

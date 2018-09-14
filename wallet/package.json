@@ -12,7 +12,8 @@
         "electron:w": "npm run watch && electron .",
         "electron": "npm run build && electron .",
         "build2": "electron-packager . app --platform linux --arch x64 --icon=src/assets/images/logo.png --out dist/",
-        "postinstall": "electron-builder install-app-deps"
+        "postinstall": "electron-builder install-app-deps",
+        "dist": "electron-builder"
     },
     "dependencies": {
         "@angular/animations": "~4.2.0",

@@ -3,10 +3,10 @@ const path = require('path');
 const url = require('url');
 const { ENV } = require('./config/config.js');
 const WINDOW_OPTS = {
-        width: 1000,
-        height: 720,
-        minWidth: 1000,
-        minHeight: 720,
+        width: 1280,
+        height: 1024,
+        minWidth: 1024,
+        minHeight: 800,
         'use-content-size': true,
         icon: path.join(__dirname, '/logo.png')
     }

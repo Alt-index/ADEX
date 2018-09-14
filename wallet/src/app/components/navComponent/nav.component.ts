@@ -10,7 +10,6 @@ import {MdDialog} from '@angular/material';
 import { SelectAccountDialogComponent } from './selectAccount-dialog.component';
 import { AddAccountDialogComponent } from './addAccount-dialog.component';
 import { LoadingDialogComponent } from '../dialogs/loading-dialog.component';
-import { Web3 } from '../../web3.service';
 
 @Component({
   selector: 'app-nav',
@@ -21,7 +20,7 @@ export class NavComponent implements OnInit {
   route: string = "";
   loadingD;
   interval
-  constructor(location: Location, router: Router,protected _account: AccountService,public dialog: MdDialog, protected _web3: Web3) {
+  constructor(location: Location, router: Router,public _account: AccountService,public dialog: MdDialog) {
     router.events.subscribe((val) => {
       if(location.path() != ''){
         this.route = location.path();

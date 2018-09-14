@@ -4,7 +4,7 @@ import {MdDialog} from '@angular/material';
 import {MdDialogRef} from '@angular/material';
 
 import { AccountService } from '../../../account.service';
-import { WalletService } from '../../../wallet.service'
+import { WalletService } from '../../../wallet.service';
 
 @Component({
   selector: 'confirm-delete',
